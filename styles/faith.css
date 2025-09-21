@@ -1,0 +1,12 @@
+.tab.faith { padding: 1em; }
+.faith-tab h2 { font-size: 1.2em; border-bottom: 1px solid #666; margin-bottom: 0.5em; }
+.faith-tab .form-group { margin: 0.5em 0; }
+.faith-tab label { font-weight: bold; margin-bottom: 0.25em; display: block; }
+.faith-tab input { width: 100%; margin-bottom: 0.5em; }
+
+.control-icon.faith-control { position: relative; cursor: pointer; }
+.control-icon.faith-control .faith-count {
+  position: absolute; bottom: -5px; right: -5px;
+  background: #222; color: #fff; font-size: 0.7em;
+  padding: 0 3px; border-radius: 3px;
+}

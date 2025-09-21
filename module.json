@@ -1,0 +1,16 @@
+{
+  "name": "faith-tracker",
+  "title": "Faith Tracker",
+  "description": "Adds Faith Points and Deity tracking to Actor sheets.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11"
+  },
+  "scripts": ["scripts/faith.js"],
+  "styles": ["styles/faith.css"],
+  "esmodules": [],
+  "packs": [],
+  "system": [],
+  "dependencies": []
+}
