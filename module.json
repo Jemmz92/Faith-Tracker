@@ -1,7 +1,7 @@
 {
   "name": "faith-tracker",
   "title": "Faith Tracker",
-  "description": "Tracks Faith Points, deity, and allows Last Prayer in D&D5e.",
+  "description": "Tracks Faith Points, deity, displays Faith above tokens, and allows Last Prayer in D&D5e.",
   "version": "1.0.0",
   "author": "jemmz92",
   "scripts": ["scripts/faith.js"],
