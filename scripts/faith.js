@@ -1,9 +1,9 @@
-// ===== Faith Tracker for Foundry V12 (Final Version with Deity Info) =====
+// ===== Faith Tracker for Foundry V12 (Final Version) =====
 
 const DEITIES = {
   "Selaryon": {
     image: "https://raw.githubusercontent.com/jemmz92/faith-tracker/main/faith-images/Selaryon.png",
-    text: "From the first spark of creation, Selaryon (The Creator) cast his silver light across the void, shaping the heavens and weaving the threads of fate. Mortals who look to the stars may find guidance, prophecy, and the balance between light and dark. Those who follow Selaryon seek clarity, cosmic insight, and the patience to let destiny unfold."
+    text: "From the first spark of creation, Selaryon cast his silver light across the void, shaping the heavens and weaving the threads of fate. Mortals who look to the stars may find guidance, prophecy, and the balance between light and dark. Those who follow Selaryon seek clarity, cosmic insight, and the patience to let destiny unfold."
   },
   "Kaelthar": {
     image: "https://raw.githubusercontent.com/jemmz92/faith-tracker/main/faith-images/Kaelthar.png",
@@ -39,6 +39,18 @@ const DEITIES = {
   }
 };
 
+const DEITY_EFFECTS = {
+  "Selaryon": "Gain Truesight 30 ft. for 1 hour.",
+  "Kaelthar": "Free melee attack with advantage, +PB radiant damage.",
+  "Luminael": "Heal 2d10 + level HP; undead within 30 ft. have disadvantage against you.",
+  "Noctyra": "Rise with 1d4 shadow wraiths aiding you for 3 rounds.",
+  "Verdalis": "Roots restrain enemies in 15 ft. radius (1 min).",
+  "Zerithia": "Auto success on 1 roll within 1 minute; lose 1d4 × 10 gp.",
+  "Amaryth": "Allies in 30 ft. regain 1d6 + PB HP and gain advantage on next attack.",
+  "Dravok": "Enemies in 15 ft. take 2d10 fire damage; you gain 1 level of exhaustion.",
+  "Eryndra": "Gain an extra action each turn for 1d4 rounds, then collapse at 0 HP (stable)."
+};
+
 Hooks.on("renderActorSheet", (app, html) => {
   const actor = app.actor;
   if (!actor) return;
@@ -56,7 +68,6 @@ Hooks.on("renderActorSheet", (app, html) => {
     tabNav.append(`<a class="item" data-tab="faith"><span class="faith-badge">0</span></a>`); 
     html.find(".tab").parent().append(`<div class="tab" data-tab="faith"></div>`);
     faithTabButton = tabNav.find('a[data-tab="faith"]');
-
     faithTabButton.click(function() {
       const tab = $(this).data("tab");
       html.find(".tab").removeClass("active");
@@ -85,7 +96,7 @@ Hooks.on("renderActorSheet", (app, html) => {
           <button class="spend-faith btn">Spend Faith</button>
         </div>
         <div class="faith-deity-info" style="margin-top:10px;">
-          <img src="${DEITIES[currentDeity].image}" style="max-width:100px; display:block; margin-bottom:5px;">
+          <img src="${DEITIES[currentDeity].image}" style="max-width:140px; max-height:140px; display:block; margin-bottom:5px;">
           <p>${DEITIES[currentDeity].text}</p>
         </div>
       </div>
@@ -96,35 +107,64 @@ Hooks.on("renderActorSheet", (app, html) => {
       const selected = $(this).val();
       const infoDiv = faithTab.find(".faith-deity-info");
       infoDiv.html(`
-        <img src="${DEITIES[selected].image}" style="max-width:100px; display:block; margin-bottom:5px;">
+        <img src="${DEITIES[selected].image}" style="max-width:140px; max-height:140px; display:block; margin-bottom:5px;">
         <p>${DEITIES[selected].text}</p>
       `);
     });
 
     // --- Submit Button ---
-    faithTab.find(".submit-faith").click(() => {
+    faithTab.find(".submit-faith").click(async () => {
       const newDeity = faithTab.find(".faith-deity").val();
       const newFaith = parseInt(faithTab.find(".faith-points").val()) || 0;
 
-      actor.setFlag("faith-tracker","deity", newDeity);
-      actor.setFlag("faith-tracker","faithPoints", newFaith);
+      await actor.setFlag("faith-tracker","deity", newDeity);
+      await actor.setFlag("faith-tracker","faithPoints", newFaith);
 
-      refreshBadge(actor, html);
+      refreshBadge(actor, app);
       ui.notifications.info(`Faith updated: ${newFaith} points, Deity: ${newDeity}`);
     });
 
     // --- Spend Faith Button ---
-    faithTab.find(".spend-faith").click(() => {
-      spendFaith(actor);
-      refreshBadge(actor, html);
+    faithTab.find(".spend-faith").click(async () => {
+      await spendFaith(actor);
+      refreshBadge(actor, app);
     });
   }
 
   // --- Initial badge update ---
-  refreshBadge(actor, html);
+  refreshBadge(actor, app);
 });
 
-/* ---------------- Automatic Last Prayer ---------------- */
+// --- Badge Refresh ---
+function refreshBadge(actor, sheetApp) {
+  const points = actor.getFlag("faith-tracker","faithPoints") || 0;
+  const badge = sheetApp.element.find('a[data-tab="faith"] .faith-badge');
+  if (badge.length) badge.text(points);
+}
+
+// --- Spend Faith Function ---
+async function spendFaith(actor) {
+  let faith = actor.getFlag("faith-tracker", "faithPoints") || 0;
+  const deity = actor.getFlag("faith-tracker", "deity") || "Selaryon";
+
+  if (faith > 0) {
+    // Consume faith point
+    await actor.setFlag("faith-tracker", "faithPoints", faith - 1);
+    await actor.setFlag("faith-tracker", "faithless", true);
+
+    const effectText = DEITY_EFFECTS[deity] || "";
+
+    ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<b>${actor.name}</b> invokes their Last Prayer to <i>${deity}</i> and spends a Faith Point!<br><i>Effect: ${effectText}</i>`
+    });
+
+  } else {
+    ui.notifications.warn(`${actor.name} has no Faith Points left.`);
+  }
+}
+
+// --- Automatic Last Prayer ---
 Hooks.on("preUpdateActor", (actor, update) => {
   if (!actor || !["character","npc"].includes(actor.type)) return;
 
@@ -136,28 +176,3 @@ Hooks.on("preUpdateActor", (actor, update) => {
     ui.notifications.info(`${actor.name} survived death by invoking their Faith!`);
   }
 });
-
-/* ---------------- Core Functions ---------------- */
-function spendFaith(actor) {
-  let faith = actor.getFlag("faith-tracker", "faithPoints") || 0;
-  const deity = actor.getFlag("faith-tracker", "deity") || "Selaryon";
-
-  if (faith > 0) {
-    actor.setFlag("faith-tracker", "faithPoints", faith - 1);
-    actor.setFlag("faith-tracker", "faithless", true);
-
-    ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<b>${actor.name}</b> invokes their Last Prayer to <i>${deity}</i> and spends a Faith Point! They are now Faithless.`
-    });
-  } else {
-    ui.notifications.warn(`${actor.name} has no Faith Points left.`);
-  }
-}
-
-/* ---------------- Badge Refresh ---------------- */
-function refreshBadge(actor, html) {
-  const points = actor.getFlag("faith-tracker","faithPoints") || 0;
-  const badge = html.find('a[data-tab="faith"] .faith-badge');
-  if (badge.length) badge.text(points);
-}
