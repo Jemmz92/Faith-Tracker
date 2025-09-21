@@ -1,4 +1,4 @@
-/* --- Faith Panel under Class --- */
+/* ---------------- Faith Panel ---------------- */
 .faith-panel {
   border: 1px solid #888;
   padding: 0.5em 1em;
@@ -7,36 +7,10 @@
   background: #222;
   color: #fff;
 }
+.faith-panel label { font-weight: bold; margin-bottom: 0.25em; }
+.faith-panel input { width: 120px; margin-right: 0.5em; margin-bottom: 0.25em; }
 
-.faith-panel label {
-  font-weight: bold;
-  margin-bottom: 0.25em;
-}
-
-.faith-panel input {
-  width: 120px;
-  margin-right: 0.5em;
-  margin-bottom: 0.25em;
-}
-
-/* --- HUD Button --- */
-.control-icon.faith-control {
-  position: relative;
-  z-index: 999;
-  cursor: pointer;
-}
-.control-icon.faith-control .faith-count {
-  position: absolute;
-  bottom: -5px;
-  right: -5px;
-  background: #222;
-  color: #fff;
-  font-size: 0.7em;
-  padding: 0 3px;
-  border-radius: 3px;
-}
-
-/* --- Faith Sheet Header Display --- */
+/* ---------------- Sheet Header Display ---------------- */
 .faith-display {
   position: absolute;
   top: 10px;
@@ -50,3 +24,19 @@
   z-index: 500;
 }
 .faith-display strong { color: #ffd700; }
+
+/* ---------------- Token Faith Display ---------------- */
+.token-faith-display {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 30, 30, 0.85);
+  color: #ffd700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 1000;
+}
