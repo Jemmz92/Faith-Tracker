@@ -2,7 +2,7 @@
   "name": "faith-tracker",
   "title": "Faith Tracker",
   "description": "Tracks Faith Points, deity selection, shows Faith tab with badge, and allows Last Prayer for D&D5e.",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "author": "jemmz92",
   "scripts": ["scripts/faith.js"],
   "styles": ["styles/faith.css"],
