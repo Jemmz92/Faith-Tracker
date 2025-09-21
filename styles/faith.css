@@ -1,8 +1,10 @@
+/* ---------------- Faith Tab ---------------- */
 .faith-panel {
   padding: 1em;
   background: #222;
   color: #fff;
   border-radius: 6px;
+  font-size: 0.9em;
 }
 
 .faith-panel label {
@@ -25,6 +27,16 @@
   padding: 0.3em 0.6em;
   cursor: pointer;
 }
+
 .faith-panel button:hover {
   background-color: #ffcc00;
+}
+
+/* ---------------- Faith Display Next to Edit Button ---------------- */
+.faith-header {
+  display: inline-block;
+  margin-left: 15px;
+  font-weight: bold;
+  color: #ffd700;
+  font-size: 0.85em;
 }
