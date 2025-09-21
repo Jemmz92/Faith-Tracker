@@ -1,4 +1,4 @@
-/* ---------------- Faith Tab ---------------- */
+/* ---------------- Faith Tab Panel ---------------- */
 .faith-panel {
   padding: 1em;
   background: #222;
@@ -32,11 +32,21 @@
   background-color: #ffcc00;
 }
 
-/* ---------------- Faith Display Next to Edit Button ---------------- */
-.faith-header {
+/* ---------------- Badge on Tab ---------------- */
+.tabs a[data-tab="faith"] {
+  position: relative;
+}
+
+.tabs a[data-tab="faith"] .faith-badge {
   display: inline-block;
-  margin-left: 15px;
-  font-weight: bold;
-  color: #ffd700;
-  font-size: 0.85em;
+  min-width: 18px;
+  height: 18px;
+  line-height: 18px;
+  font-size: 0.75em;
+  color: #fff;
+  background-color: #ffd700;
+  border-radius: 50%;
+  text-align: center;
+  vertical-align: top;
+  margin-left: 4px;
 }
