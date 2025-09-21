@@ -1,9 +1,23 @@
-/* --- Faith Tab --- */
-.tab.faith { padding: 1em; }
-.faith-tab h2 { font-size: 1.2em; border-bottom: 1px solid #666; margin-bottom: 0.5em; }
-.faith-tab .form-group { margin: 0.5em 0; }
-.faith-tab label { font-weight: bold; margin-bottom: 0.25em; display: block; }
-.faith-tab input { width: 100%; margin-bottom: 0.5em; }
+/* --- Faith Panel under Class --- */
+.faith-panel {
+  border: 1px solid #888;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  margin-top: 0.5em;
+  background: #222;
+  color: #fff;
+}
+
+.faith-panel label {
+  font-weight: bold;
+  margin-bottom: 0.25em;
+}
+
+.faith-panel input {
+  width: 120px;
+  margin-right: 0.5em;
+  margin-bottom: 0.25em;
+}
 
 /* --- HUD Button --- */
 .control-icon.faith-control {
