@@ -1,20 +1,30 @@
-/* ---------------- Faith Panel ---------------- */
 .faith-panel {
-  border: 1px solid #888;
-  padding: 0.5em 1em;
-  border-radius: 6px;
-  margin-top: 0.5em;
+  padding: 1em;
   background: #222;
   color: #fff;
+  border-radius: 6px;
 }
-.faith-panel label { font-weight: bold; margin-bottom: 0.25em; }
-.faith-panel input { width: 120px; margin-right: 0.5em; margin-bottom: 0.25em; }
 
-/* ---------------- Faith Display Next to Edit Button ---------------- */
-.faith-header {
-  display: inline-block;
-  margin-left: 15px;
+.faith-panel label {
+  display: block;
+  margin-bottom: 0.5em;
   font-weight: bold;
-  color: #ffd700;
-  font-size: 0.85em;
+}
+
+.faith-panel input {
+  margin-left: 0.5em;
+  width: 120px;
+}
+
+.faith-panel button {
+  margin-top: 0.5em;
+  background-color: #ffd700;
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  padding: 0.3em 0.6em;
+  cursor: pointer;
+}
+.faith-panel button:hover {
+  background-color: #ffcc00;
 }
