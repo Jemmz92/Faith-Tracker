@@ -1,19 +1,19 @@
 // ===== Faith Tracker for Foundry v12 =====
 
 /* ---------------- Actor Sheet Faith Panel ---------------- */
-Hooks.on("renderActorSheet", (app, html, data) => {
+Hooks.on("renderActorSheet", (app, html) => {
   const actor = app.actor;
   if (!actor) return;
 
-  // Initialize flags if missing
+  // Initialize flags
   if (actor.getFlag("faith-tracker", "faithPoints") === undefined)
     actor.setFlag("faith-tracker", "faithPoints", 1);
   if (actor.getFlag("faith-tracker", "deity") === undefined)
     actor.setFlag("faith-tracker", "deity", "");
 
-  // Insert Faith panel under Class section
+  // --- Faith Panel under Class Section ---
   if (!html.find(".faith-panel").length) {
-    const classSection = html.find(".character-info"); // adjust if your sheet differs
+    const classSection = html.find(".character-info");
     const faithPanel = $(`
       <div class="faith-panel form-group">
         <label><strong>Faith</strong></label>
@@ -33,51 +33,30 @@ Hooks.on("renderActorSheet", (app, html, data) => {
     // Event listeners
     faithPanel.find(".faith-deity").change(ev => {
       actor.setFlag("faith-tracker", "deity", ev.target.value);
-      updateFaithDisplay(actor, html);
-      updateTokenFaith(actor);
+      updateFaithHeader(actor, html);
     });
     faithPanel.find(".faith-points").change(ev => {
       actor.setFlag("faith-tracker", "faithPoints", parseInt(ev.target.value) || 0);
-      updateFaithDisplay(actor, html);
-      updateTokenFaith(actor);
+      updateFaithHeader(actor, html);
     });
     faithPanel.find(".spend-faith").click(() => {
       spendFaith(actor);
-      updateFaithDisplay(actor, html);
-      updateTokenFaith(actor);
+      updateFaithHeader(actor, html);
     });
   }
 
-  // Faith display on sheet header
-  if (!html.find(".faith-display").length) {
-    const faithDisplay = $(`
-      <div class="faith-display">
-        <strong>Faith:</strong> <span class="faith-points">${actor.getFlag("faith-tracker","faithPoints")}</span>
-        <br>
-        <strong>Deity:</strong> <span class="faith-deity">${actor.getFlag("faith-tracker","deity")}</span>
+  // --- Faith display next to Edit button ---
+  if (!html.find(".faith-header").length) {
+    const header = html.find(".window-header .window-title");
+    const faithHeader = $(`
+      <div class="faith-header">
+        🛐 <span class="faith-points">${actor.getFlag("faith-tracker","faithPoints")}</span> - <span class="faith-deity">${actor.getFlag("faith-tracker","deity")}</span>
       </div>
     `);
-    html.find(".window-header").append(faithDisplay);
+    header.append(faithHeader);
+  } else {
+    updateFaithHeader(actor, html);
   }
-});
-
-/* ---------------- Token Faith Display ---------------- */
-Hooks.on("renderToken", (token, html) => {
-  const actor = token.actor;
-  if (!actor) return;
-
-  // Remove old display to prevent duplicates
-  html.find(".token-faith-display").remove();
-
-  const faithPoints = actor.getFlag("faith-tracker", "faithPoints") || 0;
-
-  const faithDisplay = $(`
-    <div class="token-faith-display">
-      🛐 ${faithPoints}
-    </div>
-  `);
-
-  html.append(faithDisplay);
 });
 
 /* ---------------- Automatic Last Prayer (D&D5e) ---------------- */
@@ -107,29 +86,19 @@ function spendFaith(actor) {
       content: `<b>${actor.name}</b> invokes their Last Prayer to <i>${deity}</i> and survives! They are now Faithless.`
     });
 
-    updateTokenFaith(actor);
+    updateFaithHeader(actor);
   } else {
     ui.notifications.warn(`${actor.name} has no Faith Points left.`);
   }
 }
 
-/* ---------------- Update Displays ---------------- */
-function updateFaithDisplay(actor, html) {
+/* ---------------- Update Faith Display in Header ---------------- */
+function updateFaithHeader(actor, html) {
   const points = actor.getFlag("faith-tracker", "faithPoints") || 0;
   const deity = actor.getFlag("faith-tracker", "deity") || "None";
-  html.find(".faith-display .faith-points").text(points);
-  html.find(".faith-display .faith-deity").text(deity);
-  html.find(".faith-panel .faith-points").val(points);
-  html.find(".faith-panel .faith-deity").val(deity);
-}
-
-/* Update token Faith display */
-function updateTokenFaith(actor) {
-  const tokens = canvas.tokens.placeables.filter(t => t.actor?.id === actor.id);
-  tokens.forEach(t => {
-    const html = t?.hud?.element || t?.sheet?.element;
-    if (html) {
-      html.find(".token-faith-display").text(`🛐 ${actor.getFlag("faith-tracker", "faithPoints") || 0}`);
-    }
-  });
+  const header = html?.find(".faith-header");
+  if (header) {
+    header.find(".faith-points").text(points);
+    header.find(".faith-deity").text(deity);
+  }
 }
