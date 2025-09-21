@@ -1,4 +1,3 @@
-/* ---------------- Faith Tab Panel ---------------- */
 .faith-panel {
   padding: 1em;
   background: #222;
@@ -13,9 +12,9 @@
   font-weight: bold;
 }
 
-.faith-panel input {
+.faith-panel input, .faith-panel select {
   margin-left: 0.5em;
-  width: 120px;
+  width: 140px;
 }
 
 .faith-panel button {
@@ -32,7 +31,7 @@
   background-color: #ffcc00;
 }
 
-/* ---------------- Badge on Tab ---------------- */
+/* Badge on tab */
 .tabs a[data-tab="faith"] {
   position: relative;
 }
