@@ -96,7 +96,7 @@ Hooks.on("renderActorSheet", (app, html) => {
           <button class="spend-faith btn">Spend Faith</button>
         </div>
         <div class="faith-deity-info" style="margin-top:10px;">
-          <img src="${DEITIES[currentDeity].image}" style="max-width:140px; max-height:140px; display:block; margin-bottom:5px;">
+          <img src="${DEITIES[currentDeity].image}" style="max-width:560px; max-height:560px; display:block; margin-bottom:10px;">
           <p>${DEITIES[currentDeity].text}</p>
         </div>
       </div>
@@ -107,7 +107,7 @@ Hooks.on("renderActorSheet", (app, html) => {
       const selected = $(this).val();
       const infoDiv = faithTab.find(".faith-deity-info");
       infoDiv.html(`
-        <img src="${DEITIES[selected].image}" style="max-width:140px; max-height:140px; display:block; margin-bottom:5px;">
+     <img src="${DEITIES[selected].image}" style="max-width:560px; max-height:560px; display:block; margin-bottom:10px;">
         <p>${DEITIES[selected].text}</p>
       `);
     });
