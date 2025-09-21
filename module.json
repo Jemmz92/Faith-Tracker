@@ -1,16 +1,16 @@
 {
   "name": "faith-tracker",
   "title": "Faith Tracker",
-  "description": "Adds Faith Points and Deity tracking to Actor sheets.",
+  "description": "Tracks Faith Points, deity, and allows Last Prayer in D&D5e.",
   "version": "1.0.0",
+  "author": "jemmz92",
+  "scripts": ["scripts/faith.js"],
+  "styles": ["styles/faith.css"],
+  "url": "https://github.com/jemmz92/faith-tracker",
+  "manifest": "https://raw.githubusercontent.com/jemmz92/faith-tracker/main/module.json",
+  "download": "https://github.com/jemmz92/faith-tracker/archive/refs/heads/main.zip",
   "compatibility": {
     "minimum": "11",
     "verified": "11"
-  },
-  "scripts": ["scripts/faith.js"],
-  "styles": ["styles/faith.css"],
-  "esmodules": [],
-  "packs": [],
-  "system": [],
-  "dependencies": []
+  }
 }
