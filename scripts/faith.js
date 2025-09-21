@@ -1,5 +1,10 @@
 // ===== Faith Tracker for Foundry v12 (Final Version) =====
 
+const DEITIES = [
+  "Selaryon", "Kaelthar", "Luminael", "Noctyra",
+  "Verdalis", "Zerithia", "Amaryth", "Dravok", "Eryndra"
+];
+
 Hooks.on("renderActorSheet", (app, html) => {
   const actor = app.actor;
   if (!actor) return;
@@ -8,13 +13,13 @@ Hooks.on("renderActorSheet", (app, html) => {
   if (actor.getFlag("faith-tracker", "faithPoints") === undefined)
     actor.setFlag("faith-tracker", "faithPoints", 1);
   if (actor.getFlag("faith-tracker", "deity") === undefined)
-    actor.setFlag("faith-tracker", "deity", "");
+    actor.setFlag("faith-tracker", "deity", DEITIES[0]);
 
-  // --- Add Faith tab button (symbol icon + badge) ---
+  // --- Add Faith tab button (badge only) ---
   const tabNav = html.find(".tabs");
   let faithTabButton = tabNav.find('a[data-tab="faith"]');
   if (!faithTabButton.length) {
-    tabNav.append(`<a class="item" data-tab="faith">🛐 <span class="faith-badge">0</span></a>`); // Tab symbol + badge
+    tabNav.append(`<a class="item" data-tab="faith"><span class="faith-badge">0</span></a>`); 
     html.find(".tab").parent().append(`<div class="tab" data-tab="faith"></div>`);
     faithTabButton = tabNav.find('a[data-tab="faith"]');
 
@@ -30,27 +35,32 @@ Hooks.on("renderActorSheet", (app, html) => {
   // --- Populate Faith tab ---
   const faithTab = html.find('.tab[data-tab="faith"]');
   if (!faithTab.find(".faith-panel").length) {
+    let currentDeity = actor.getFlag("faith-tracker","deity");
+    let deityOptions = DEITIES.map(d => `<option value="${d}" ${d===currentDeity?"selected":""}>${d}</option>`).join("");
+    
     faithTab.html(`
       <div class="faith-panel">
         <h3>Faith</h3>
-        <label>Deity: <input type="text" class="faith-deity" value="${actor.getFlag("faith-tracker","deity")}"></label>
-        <label>Faith Points: <input type="number" class="faith-points" value="${actor.getFlag("faith-tracker","faithPoints")}" min="0"></label>
-        <button class="spend-faith btn">Spend Faith</button>
+        <label>Deity: 
+          <select class="faith-deity">${deityOptions}</select>
+        </label>
+        <label>Faith Points: 
+          <input type="number" class="faith-points" value="${actor.getFlag("faith-tracker","faithPoints")}" min="0">
+        </label>
+        <button class="submit-faith btn">Submit</button>
       </div>
     `);
 
-    // Event listeners
-    faithTab.find(".faith-deity").change(ev => {
-      actor.setFlag("faith-tracker","deity", ev.target.value);
+    // Submit button event
+    faithTab.find(".submit-faith").click(() => {
+      const newDeity = faithTab.find(".faith-deity").val();
+      const newFaith = parseInt(faithTab.find(".faith-points").val()) || 0;
+
+      actor.setFlag("faith-tracker","deity", newDeity);
+      actor.setFlag("faith-tracker","faithPoints", newFaith);
+
       updateFaithBadge(actor, html);
-    });
-    faithTab.find(".faith-points").change(ev => {
-      actor.setFlag("faith-tracker","faithPoints", parseInt(ev.target.value) || 0);
-      updateFaithBadge(actor, html);
-    });
-    faithTab.find(".spend-faith").click(() => {
-      spendFaith(actor);
-      updateFaithBadge(actor, html);
+      ui.notifications.info(`Faith updated: ${newFaith} points, Deity: ${newDeity}`);
     });
   }
 
@@ -74,7 +84,7 @@ Hooks.on("preUpdateActor", (actor, update) => {
 /* ---------------- Core Functions ---------------- */
 function spendFaith(actor) {
   let faith = actor.getFlag("faith-tracker", "faithPoints") || 0;
-  const deity = actor.getFlag("faith-tracker", "deity") || "their god";
+  const deity = actor.getFlag("faith-tracker", "deity") || DEITIES[0];
 
   if (faith > 0) {
     actor.setFlag("faith-tracker", "faithPoints", faith - 1);
