@@ -10,7 +10,7 @@
   "manifest": "https://raw.githubusercontent.com/jemmz92/faith-tracker/main/module.json",
   "download": "https://github.com/jemmz92/faith-tracker/archive/refs/heads/main.zip",
   "compatibility": {
-    "minimum": "11",
-    "verified": "11"
+    "minimum": "12",
+    "verified": "12"
   }
 }
