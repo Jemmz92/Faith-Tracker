@@ -1,8 +1,8 @@
 {
   "name": "faith-tracker",
   "title": "Faith Tracker",
-  "description": "Tracks Faith Points, deity, shows Faith next to Edit button, and allows Last Prayer in D&D5e.",
-  "version": "1.5.0",
+  "description": "Tracks Faith Points, deity, shows Faith tab with a badge, and allows Last Prayer in D&D5e.",
+  "version": "1.6.0",
   "author": "jemmz92",
   "scripts": ["scripts/faith.js"],
   "styles": ["styles/faith.css"],
