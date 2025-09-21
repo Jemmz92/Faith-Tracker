@@ -1,17 +1,16 @@
-// ===== Faith Tracker =====
+// ===== Faith Tracker for Foundry v12 =====
 
-// Add Faith tab to all Actor sheets
 Hooks.on("renderActorSheet", (app, html, data) => {
   const actor = app.actor;
   if (!actor) return;
 
-  // Initialize flags
+  // Initialize flags if missing
   if (actor.getFlag("faith-tracker", "faithPoints") === undefined)
     actor.setFlag("faith-tracker", "faithPoints", 1);
   if (actor.getFlag("faith-tracker", "deity") === undefined)
     actor.setFlag("faith-tracker", "deity", "");
 
-  // Add Faith tab if missing
+  // --- Faith Tab ---
   const tabs = html.find(".sheet-tabs");
   const body = html.find(".sheet-body");
   if (!tabs.find('[data-tab="faith"]').length) {
@@ -34,18 +33,42 @@ Hooks.on("renderActorSheet", (app, html, data) => {
     `);
     body.append(faithTab);
 
-    // Listeners
-    faithTab.find(".faith-deity").change(ev => actor.setFlag("faith-tracker", "deity", ev.target.value));
-    faithTab.find(".faith-points").change(ev => actor.setFlag("faith-tracker", "faithPoints", parseInt(ev.target.value) || 0));
-    faithTab.find(".spend-faith").click(() => spendFaith(actor));
+    // Event listeners
+    faithTab.find(".faith-deity").change(ev => {
+      actor.setFlag("faith-tracker", "deity", ev.target.value);
+      updateFaithDisplay(actor, html);
+    });
+    faithTab.find(".faith-points").change(ev => {
+      actor.setFlag("faith-tracker", "faithPoints", parseInt(ev.target.value) || 0);
+      updateFaithDisplay(actor, html);
+    });
+    faithTab.find(".spend-faith").click(() => {
+      spendFaith(actor);
+      updateFaithDisplay(actor, html);
+    });
+  }
+
+  // --- Faith Display on Sheet Header ---
+  if (!html.find(".faith-display").length) {
+    const faithDisplay = $(`
+      <div class="faith-display">
+        <strong>Faith:</strong> <span class="faith-points">${actor.getFlag("faith-tracker","faithPoints")}</span>
+        <br>
+        <strong>Deity:</strong> <span class="faith-deity">${actor.getFlag("faith-tracker","deity")}</span>
+      </div>
+    `);
+    html.find(".window-header").append(faithDisplay);
   }
 });
 
-// HUD button for tokens
+// --- HUD Icon for Tokens ---
 Hooks.on("renderTokenHUD", (hud, html, token) => {
   const actor = token.actor;
   if (!actor) return;
   const faith = actor.getFlag("faith-tracker", "faithPoints") || 0;
+
+  // Avoid duplicates
+  if (html.find(".faith-control").length) return;
 
   const faithButton = $(`
     <div class="control-icon faith-control" title="Faith Points">
@@ -56,13 +79,15 @@ Hooks.on("renderTokenHUD", (hud, html, token) => {
   faithButton.click(() => {
     spendFaith(actor);
     faithButton.find(".faith-count").text(actor.getFlag("faith-tracker", "faithPoints") || 0);
+    const sheetHtml = actor.sheet.element;
+    updateFaithDisplay(actor, sheetHtml);
   });
   html.find(".col.right").append(faithButton);
 });
 
-// Automatic Last Prayer for D&D5e
+// --- Automatic Last Prayer for D&D5e ---
 Hooks.on("preUpdateActor", (actor, update) => {
-  if (!actor || actor.type !== "character") return;
+  if (!actor || !["character","npc"].includes(actor.type)) return;
 
   const oldHP = getProperty(actor.system, "attributes.hp.value");
   const newHP = update.system?.attributes?.hp?.value;
@@ -74,13 +99,15 @@ Hooks.on("preUpdateActor", (actor, update) => {
   }
 });
 
-// Core function
+// --- Core Function ---
 function spendFaith(actor) {
   let faith = actor.getFlag("faith-tracker", "faithPoints") || 0;
   const deity = actor.getFlag("faith-tracker", "deity") || "their god";
+
   if (faith > 0) {
     actor.setFlag("faith-tracker", "faithPoints", faith - 1);
     actor.setFlag("faith-tracker", "faithless", true);
+
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
       content: `<b>${actor.name}</b> invokes their Last Prayer to <i>${deity}</i> and survives! They are now Faithless.`
@@ -88,4 +115,12 @@ function spendFaith(actor) {
   } else {
     ui.notifications.warn(`${actor.name} has no Faith Points left.`);
   }
+}
+
+// --- Update Sheet Header Display ---
+function updateFaithDisplay(actor, html) {
+  const points = actor.getFlag("faith-tracker", "faithPoints") || 0;
+  const deity = actor.getFlag("faith-tracker", "deity") || "None";
+  html.find(".faith-display .faith-points").text(points);
+  html.find(".faith-display .faith-deity").text(deity);
 }
