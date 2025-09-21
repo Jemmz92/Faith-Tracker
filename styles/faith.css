@@ -1,12 +1,38 @@
+/* --- Faith Tab --- */
 .tab.faith { padding: 1em; }
 .faith-tab h2 { font-size: 1.2em; border-bottom: 1px solid #666; margin-bottom: 0.5em; }
 .faith-tab .form-group { margin: 0.5em 0; }
 .faith-tab label { font-weight: bold; margin-bottom: 0.25em; display: block; }
 .faith-tab input { width: 100%; margin-bottom: 0.5em; }
 
-.control-icon.faith-control { position: relative; cursor: pointer; }
-.control-icon.faith-control .faith-count {
-  position: absolute; bottom: -5px; right: -5px;
-  background: #222; color: #fff; font-size: 0.7em;
-  padding: 0 3px; border-radius: 3px;
+/* --- HUD Button --- */
+.control-icon.faith-control {
+  position: relative;
+  z-index: 999;
+  cursor: pointer;
 }
+.control-icon.faith-control .faith-count {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background: #222;
+  color: #fff;
+  font-size: 0.7em;
+  padding: 0 3px;
+  border-radius: 3px;
+}
+
+/* --- Faith Sheet Header Display --- */
+.faith-display {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #1e1e1e;
+  color: #fff;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  font-size: 0.9em;
+  text-align: right;
+  z-index: 500;
+}
+.faith-display strong { color: #ffd700; }
