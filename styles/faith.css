@@ -10,33 +10,11 @@
 .faith-panel label { font-weight: bold; margin-bottom: 0.25em; }
 .faith-panel input { width: 120px; margin-right: 0.5em; margin-bottom: 0.25em; }
 
-/* ---------------- Sheet Header Display ---------------- */
-.faith-display {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #1e1e1e;
-  color: #fff;
-  padding: 0.5em 1em;
-  border-radius: 6px;
-  font-size: 0.9em;
-  text-align: right;
-  z-index: 500;
-}
-.faith-display strong { color: #ffd700; }
-
-/* ---------------- Token Faith Display ---------------- */
-.token-faith-display {
-  position: absolute;
-  top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(30, 30, 30, 0.85);
-  color: #ffd700;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.8em;
+/* ---------------- Faith Display Next to Edit Button ---------------- */
+.faith-header {
+  display: inline-block;
+  margin-left: 15px;
   font-weight: bold;
-  pointer-events: none;
-  z-index: 1000;
+  color: #ffd700;
+  font-size: 0.85em;
 }
